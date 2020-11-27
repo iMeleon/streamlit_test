@@ -202,7 +202,7 @@ Vis3on22[8] *predictor!*
 """)
 st.image(image, caption='Sunrise by the mountains',
          use_column_width=True)
-
+print(228)
 #cv.imshow('table2', screenshot_with_bb)
         # table_network.save_detected_obj(r'C:\Users\user\Desktop\test',0)
         # if 'preflop' in table_network.objects_after_NMS:
