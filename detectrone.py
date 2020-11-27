@@ -4,6 +4,8 @@ from detectron2 import model_zoo
 from detectron2.engine import DefaultPredictor
 from detectron2.config import get_cfg
 from detectron2.data import MetadataCatalog, DatasetCatalog
+from detectron2.utils.logger import setup_logger
+setup_logger()
 
 
 cfg = get_cfg()
