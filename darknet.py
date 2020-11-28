@@ -4,7 +4,9 @@ import os
 from time import time, sleep
 import streamlit as st
 import pandas as pd
+from collections import OrderedDict
 from io import StringIO
+import tempfile
 class DarkNetwork:
 
     def __init__(self, cfg_file_name, weights_file_name, class_file_name, probability_minimum=0.8, threshold=0.3):
@@ -166,7 +168,7 @@ class DarkNetwork:
                 # Drawing bounding box on the original image
                 cv.rectangle(photo, (x_min, y_min),
                              (x_min + box_width, y_min + box_height),
-                             colour_box_current, 2)
+                             colour_box_current, 7)
 
                 # Preparing text with label and confidence for current bounding box
                 text_box_current = '{}: {:.4f}'.format(self.labels[int(self.class_numbers[i])],
@@ -178,77 +180,191 @@ class DarkNetwork:
             # print('Number of objects left after non-maximum suppression:', counter)
 
         return photo
-
+table_network = DarkNetwork('models/table/wm_tables.cfg',
+                                'models/table/wm_tables_last.weights',
+                                'models/table/classes2.names',
+                                probability_minimum=0.7)
 def decodeImage(data):
     #Gives us 1d array
     decoded = np.fromstring(data, dtype=np.uint8)
     #We have to convert it into (270, 480,3) in order to see as an image
     decoded = decoded.reshape((270, 480,3))
     return decoded;
+def page_picture():
 
-if __name__ == "__main__":
-
-
-    table_network = DarkNetwork('models/table/wm_tables.cfg',
-                                'models/table/wm_tables_last.weights',
-                                'models/table/classes2.names',
-                                probability_minimum=0.7)
     # wm_table = Table('models/wm_tables_only/yolov4_wm_tables_only.cfg',
     #                  'models/wm_tables_only/yolov4_wm_tables_only_last.weights',
     #                  'models/wm_tables_only/classes.names',
     #                  probability_minimum=0.2)
 
-image = cv.imread('58.png')
-image = cv.cvtColor(image, cv.COLOR_BGR2RGB)
-table_network.get_network_result(image)
-image = table_network.vizaulizate(image)
-html = """
-                <h1 align="center"> TrueScan </h1>
-     <h4 align="center">Upload image to predict</h2>
-"""
+    image = cv.imread('58.png')
+    image = cv.cvtColor(image, cv.COLOR_BGR2RGB)
+    table_network.get_network_result(image)
+    image = table_network.vizaulizate(image)
+    html = """
+                    <h1 align="center"> TrueScan </h1>
+         <h4 align="center">Upload image to predict</h2>
+    """
 
-st.markdown(html, unsafe_allow_html=True)
-# st.write()
-# st.write("""
-# <h1> foo </h1>
-# """)
-uploaded_file = st.file_uploader("Choose a file")
-if uploaded_file is not None:
-    bytes_data = uploaded_file.read()
-    nparr = np.fromstring(bytes_data, np.uint8)
-    img_np = cv.imdecode(nparr, cv.IMREAD_COLOR)
-    img_np = cv.cvtColor(img_np, cv.COLOR_BGR2RGB)# cv2.IMREAD_COLOR
-    image = table_network.vizaulizate(img_np)
-    st.image(image, caption='Sunrise by the mountains',
-             use_column_width=True)
-else:
-    st.image(image, caption='Sunrise by the mountains',
-             use_column_width=True)
-    # img_ipl = cv.CreateImageHeader((img_np.shape[1], img_np.shape[0]), cv.IPL_DEPTH_8U, 3)
-    # cv.SetData(img_ipl, img_np.tostring(), img_np.dtype.itemsize * 3 * img_np.shape[1])
-    # st.image(img_np, caption='Sunrise by the mountains',
+    st.markdown(html, unsafe_allow_html=True)
+    uploaded_file = st.file_uploader("Choose a file")
+    if uploaded_file is not None:
+        bytes_data = uploaded_file.read()
+        nparr = np.fromstring(bytes_data, np.uint8)
+        img_np = cv.imdecode(nparr, cv.IMREAD_COLOR)
+        img_np = cv.cvtColor(img_np, cv.COLOR_BGR2RGB)# cv2.IMREAD_COLOR
+        table_network.get_network_result(img_np)
+        image = table_network.vizaulizate(img_np)
+        st.image(image, caption='Sunrise by the mountains',
+                 use_column_width=True)
+    else:
+        st.image(image, caption='Sunrise by the mountains',
+                 use_column_width=True)
+        # img_ipl = cv.CreateImageHeader((img_np.shape[1], img_np.shape[0]), cv.IPL_DEPTH_8U, 3)
+        # cv.SetData(img_ipl, img_np.tostring(), img_np.dtype.itemsize * 3 * img_np.shape[1])
+        # st.image(img_np, caption='Sunrise by the mountains',
+        #          use_column_width=True)
+
+        # stringio = StringIO(uploaded_file.decode("utf-8"))
+        # st.write(stringio)
+        #
+        # string_data = stringio.read()
+        # st.write(string_data)
+        #
+        # dataframe = pd.read_csv(uploaded_file)
+        # st.write(dataframe)
+    # print(228)
+    #cv.imshow('table2', screenshot_with_bb)
+            # table_network.save_detected_obj(r'C:\Users\user\Desktop\test',0)
+            # if 'preflop' in table_network.objects_after_NMS:
+            #     # table = table_network.objects_after_NMS['preflop'][0]
+            #     # print(type(table_network.objects_after_NMS['preflop']))
+            #     for table in table_network.objects_after_NMS['preflop']:
+            #         wm_table.get_network_result(table, False)
+            #         # for k, v in wm_table.table_items.items():
+                    #     print(k, v)
+                    # cv.imshow('left', wm_table.visual_dict['right'])
+                    # cv.imshow('right', wm_table.visual_dict['right'])
+                # visual_dict['right']
+                #sleep(2)
+def page_video():
+    # to_show = cv.imread('58.png')
+    # to_show = cv.cvtColor(to_show, cv.COLOR_BGR2RGB)
+    # st.image(to_show, caption='Video',
     #          use_column_width=True)
 
-    # stringio = StringIO(uploaded_file.decode("utf-8"))
-    # st.write(stringio)
-    #
-    # string_data = stringio.read()
-    # st.write(string_data)
-    #
-    # dataframe = pd.read_csv(uploaded_file)
-    # st.write(dataframe)
-print(228)
-#cv.imshow('table2', screenshot_with_bb)
-        # table_network.save_detected_obj(r'C:\Users\user\Desktop\test',0)
-        # if 'preflop' in table_network.objects_after_NMS:
-        #     # table = table_network.objects_after_NMS['preflop'][0]
-        #     # print(type(table_network.objects_after_NMS['preflop']))
-        #     for table in table_network.objects_after_NMS['preflop']:
-        #         wm_table.get_network_result(table, False)
-        #         # for k, v in wm_table.table_items.items():
-                #     print(k, v)
-                # cv.imshow('left', wm_table.visual_dict['right'])
-                # cv.imshow('right', wm_table.visual_dict['right'])
-            # visual_dict['right']
-            #sleep(2)
+    f = st.file_uploader("Upload file")
+    if f is not None:
+        pass
+        tfile = tempfile.NamedTemporaryFile(delete=False)
+        tfile.write(f.read())
+        cap = cv.VideoCapture(tfile.name)
+    else:
+        cap = cv.VideoCapture('123_modified.mp4')
+    fourcc = cv.VideoWriter_fourcc(*'H264')
+    if cap.isOpened() == False:
+        st.write("Error opening video stream or file")
+    success, frame = cap.read()
+    if success:
+        frame_rate = cap.get(cv.CAP_PROP_FPS)
+        out = cv.VideoWriter('output.mp4', fourcc, frame_rate, (frame.shape[1], frame.shape[0]))
+    while (cap.isOpened()):
+        success, frame = cap.read()
+        if success:
+                # img_np = cv.cvtColor(img_np, cv.COLOR_BGR2RGB)  # cv2.IMREAD_COLOR
+            table_network.get_network_result(frame)
+            image = table_network.vizaulizate(frame)
+            out.write(image)
+        else:
+            break
+    cap.release()
+    out.release()
+    video_file = open('output.mp4', 'rb')
+    video_bytes = video_file.read()
+    st.video(video_bytes)
+    # st.write(f.shape)
+def page_online():
+    # to_show = cv.imread('58.png')
+    # to_show = cv.cvtColor(to_show, cv.COLOR_BGR2RGB)
+    # st.image(to_show, caption='Video',
+    #          use_column_width=True)
+#     html = """
+#         <!-- Add a placeholder for the Twitch embed -->
+#     <div id="twitch-embed"></div>
+#
+#     <!-- Load the Twitch embed script -->
+#     <script src="https://embed.twitch.tv/embed/v1.js"></script>
+#
+#     <!--
+#       Create a Twitch.Embed object that will render
+#       within the "twitch-embed" root element.
+#     -->
+#     <script type="text/javascript">
+#       var embed = new Twitch.Embed("twitch-embed", {
+#         width: 854,
+#         height: 480,
+#         channel: "monstercat",
+#         layout: "video",
+#         autoplay: false,
+#         // only needed if your site is also embedded on embed.example.com and othersite.example.com
+#         parent: ["embed.example.com", "othersite.example.com"]
+#       });
+#
+#       embed.addEventListener(Twitch.Embed.VIDEO_READY, () => {
+#         var player = embed.getPlayer();
+#         player.play();
+#       });
+#     </script>
+#
+#
+# """
+#
+#     st.markdown(html, unsafe_allow_html=True)
+    html2 = """
+<iframe
+    src="https://player.twitch.tv/?dota2ruhub&parent=streamernews.example.com"
+    height="300"
+    width="400"
+    frameborder="0"
+    scrolling="no"
+    allowfullscreen="true">
+</iframe>
+
+
+    """
+    st.markdown(html2, unsafe_allow_html=True)
+    f = st.file_uploader("Upload file")
+    if f is not None:
+        pass
+        # tfile = tempfile.NamedTemporaryFile(delete=False)
+        # tfile.write(f.read())
+        # vf = cv.VideoCapture(tfile.name)
+    else:
+        video_file = open('small.mp4', 'rb')
+        video_bytes = video_file.read()
+        st.video(video_bytes)
+
+    # st.write(f.shape)
+
+DEMOS = OrderedDict(
+    [
+        ("Picture", (page_picture, None)),
+        ("Video", (page_video, None)),
+        ("Online", (page_online, None)),
+    ]
+)
+def run():
+    demo_name = st.sidebar.selectbox("Choose a demo", list(DEMOS.keys()), 0)
+    demo = DEMOS[demo_name][0]
+    for i in range(10):
+        st.empty()
+
+    demo()
+
+
+
+
+if __name__ == "__main__":
+    run()
+
 
