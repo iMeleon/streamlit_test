@@ -180,9 +180,9 @@ class DarkNetwork:
             # print('Number of objects left after non-maximum suppression:', counter)
 
         return photo
-table_network = DarkNetwork('models/table/wm_tables.cfg',
-                                'models/table/wm_tables_last.weights',
-                                'models/table/classes2.names',
+table_network = DarkNetwork('models/table/yolo_tiny_monitor.cfg',
+                                'models/table/yolo_tiny_monitor_last.weights',
+                                'models/table/classes.names',
                                 probability_minimum=0.7)
 def decodeImage(data):
     #Gives us 1d array
@@ -197,7 +197,7 @@ def page_picture():
     #                  'models/wm_tables_only/classes.names',
     #                  probability_minimum=0.2)
 
-    image = cv.imread('58.png')
+    image = cv.imread('994032446.png')
     image = cv.cvtColor(image, cv.COLOR_BGR2RGB)
     table_network.get_network_result(image)
     image = table_network.vizaulizate(image)
@@ -260,7 +260,7 @@ def page_video():
         tfile.write(f.read())
         cap = cv.VideoCapture(tfile.name)
     else:
-        cap = cv.VideoCapture('123_modified.mp4')
+        cap = cv.VideoCapture('123.mp4')
     fourcc = cv.VideoWriter_fourcc(*'H264')
     if cap.isOpened() == False:
         st.write("Error opening video stream or file")
