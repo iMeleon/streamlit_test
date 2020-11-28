@@ -271,7 +271,7 @@ def page_video():
     while (cap.isOpened()):
         success, frame = cap.read()
         if success:
-            st.write(frame.shape)
+            print(frame.shape)
             table_network.get_network_result(frame)
             image = table_network.vizaulizate(frame)
             out.write(image)
