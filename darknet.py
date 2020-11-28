@@ -248,7 +248,7 @@ def page_picture():
                 # visual_dict['right']
                 #sleep(2)
 def page_video():
-    # to_show = cv.imread('58.png')
+
     # to_show = cv.cvtColor(to_show, cv.COLOR_BGR2RGB)
     # st.image(to_show, caption='Video',
     #          use_column_width=True)
@@ -284,7 +284,6 @@ def page_video():
     st.video(video_bytes)
     # st.write(f.shape)
 def page_online():
-    # to_show = cv.imread('58.png')
     # to_show = cv.cvtColor(to_show, cv.COLOR_BGR2RGB)
     # st.image(to_show, caption='Video',
     #          use_column_width=True)
