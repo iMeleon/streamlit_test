@@ -168,7 +168,7 @@ class DarkNetwork:
                 # Drawing bounding box on the original image
                 cv.rectangle(photo, (x_min, y_min),
                              (x_min + box_width, y_min + box_height),
-                             colour_box_current, 7)
+                             colour_box_current, 3)
 
                 # Preparing text with label and confidence for current bounding box
                 text_box_current = '{}: {:.4f}'.format(self.labels[int(self.class_numbers[i])],
@@ -197,15 +197,15 @@ def page_picture():
     #                  'models/wm_tables_only/classes.names',
     #                  probability_minimum=0.2)
 
-    image = cv.imread('994032446.png')
-    image = cv.cvtColor(image, cv.COLOR_BGR2RGB)
-    table_network.get_network_result(image)
-    image = table_network.vizaulizate(image)
+
     html = """
                     <h1 align="center"> TrueScan </h1>
          <h4 align="center">Upload image to predict</h2>
     """
-
+    image = cv.imread('1.png'.format())
+    image = cv.cvtColor(image, cv.COLOR_BGR2RGB)
+    table_network.get_network_result(image)
+    image = table_network.vizaulizate(image)
     st.markdown(html, unsafe_allow_html=True)
     uploaded_file = st.file_uploader("Choose a file")
     if uploaded_file is not None:
@@ -253,37 +253,76 @@ def page_video():
     # st.image(to_show, caption='Video',
     #          use_column_width=True)
 
-    f = st.file_uploader("Upload file")
-    if f is not None:
-        pass
-        tfile = tempfile.NamedTemporaryFile(delete=False)
-        tfile.write(f.read())
-        cap = cv.VideoCapture(tfile.name)
-    else:
-        cap = cv.VideoCapture('123.mp4')
-    fourcc = cv.VideoWriter_fourcc(*'H264')
-    if cap.isOpened() == False:
-        st.write("Error opening video stream or file")
-    success, frame = cap.read()
-    if success:
-        frame_rate = cap.get(cv.CAP_PROP_FPS)
-        out = cv.VideoWriter('output.mp4', fourcc, frame_rate, (frame.shape[1], frame.shape[0]))
-    while (cap.isOpened()):
-        success, frame = cap.read()
-        if success:
-            print(frame.shape)
-            table_network.get_network_result(frame)
-            image = table_network.vizaulizate(frame)
-            out.write(image)
-        else:
-            break
-    cap.release()
-    out.release()
+    # f = st.file_uploader("Upload file")
+    # if f is not None:
+    #     pass
+    #     tfile = tempfile.NamedTemporaryFile(delete=False)
+    #     tfile.write(f.read())
+    #     cap = cv.VideoCapture(tfile.name)
+    # else:
+    #     cap = cv.VideoCapture('123.mp4')
+    # fourcc = cv.VideoWriter_fourcc(*'H264')
+    # if cap.isOpened() == False:
+    #     st.write("Error opening video stream or file")
+    # success, frame = cap.read()
+    # if success:
+    #     frame_rate = cap.get(cv.CAP_PROP_FPS)
+    #     out = cv.VideoWriter('output.mp4', fourcc, frame_rate, (frame.shape[1], frame.shape[0]))
+    # while (cap.isOpened()):
+    #     success, frame = cap.read()
+    #     if success:
+    #         table_network.get_network_result(frame)
+    #         table_network.get_network_result(frame)
+    #         image = table_network.vizaulizate(frame)
+    #         out.write(image)
+    #     else:
+    #         break
+    # cap.release()
+    # out.release()
     video_file = open('output.mp4', 'rb')
     video_bytes = video_file.read()
     st.video(video_bytes)
     # st.write(f.shape)
 def page_online():
+    with st.beta_container():
+        id = st.slider('Pick diff img', 1, 6, 4)
+        st.write(id)
+        image = cv.imread('{}.png'.format(id))
+        image = cv.cvtColor(image, cv.COLOR_BGR2RGB)
+        table_network.get_network_result(image)
+        image = table_network.vizaulizate(image)
+        st.image(image, caption='Sunrise by the mountains',
+                 use_column_width=True)
+        df= pd.DataFrame(np.array([[1, 2, 3,0]]),
+                           columns=['Radiant_kill', 'Dire_Kill', 'Radiant_tower', 'Dire_Towers'])
+        st.dataframe(df)  # Same as st.write(df)
+        # st.write("I'm ", age, 'years old')
+    # uploaded_file = st.file_uploader("Choose a file")
+    # cap = cv.VideoCapture('123.mp4')
+    # if cap.isOpened() == False:
+    #     st.write("Error opening video stream or file")
+    # success, frame = cap.read()
+    # if success:
+    #     frame_rate = cap.get(cv.CAP_PROP_FPS)
+    #
+    #
+    # while (cap.isOpened()):
+    #     success, frame = cap.read()
+    #     if success:
+    #         if uploaded_file is  None:
+    #
+    #             frame = cv.cvtColor(frame, cv.COLOR_BGR2RGB)  # cv2.IMREAD_COLOR
+    #             table_network.get_network_result(frame)
+    #             image = table_network.vizaulizate(frame)
+    #             st.image(image, caption='Sunrise by the mountains',
+    #                  use_column_width=True)
+    #         sleep(0.5)
+    #     else:
+    #         break
+    #
+    # cap.release()
+
+
     # to_show = cv.cvtColor(to_show, cv.COLOR_BGR2RGB)
     # st.image(to_show, caption='Video',
     #          use_column_width=True)
@@ -319,40 +358,41 @@ def page_online():
 # """
 #
 #     st.markdown(html, unsafe_allow_html=True)
-    html2 = """
-<iframe
-    src="https://player.twitch.tv/?dota2ruhub&parent=streamernews.example.com"
-    height="300"
-    width="400"
-    frameborder="0"
-    scrolling="no"
-    allowfullscreen="true">
-</iframe>
-
-
-    """
-    st.markdown(html2, unsafe_allow_html=True)
-    f = st.file_uploader("Upload file")
-    if f is not None:
-        pass
-        # tfile = tempfile.NamedTemporaryFile(delete=False)
-        # tfile.write(f.read())
-        # vf = cv.VideoCapture(tfile.name)
-    else:
-        video_file = open('small.mp4', 'rb')
-        video_bytes = video_file.read()
-        st.video(video_bytes)
+#     html2 = """
+# <iframe
+#     src="https://player.twitch.tv/?dota2ruhub&parent=streamernews.example.com"
+#     height="300"
+#     width="400"
+#     frameborder="0"
+#     scrolling="no"
+#     allowfullscreen="true">
+# </iframe>
+#
+#
+#     """
+#     st.markdown(html2, unsafe_allow_html=True)
+#     f = st.file_uploader("Upload file")
+#     if f is not None:
+#         pass
+#         # tfile = tempfile.NamedTemporaryFile(delete=False)
+#         # tfile.write(f.read())
+#         # vf = cv.VideoCapture(tfile.name)
+#     else:
+#         video_file = open('small.mp4', 'rb')
+#         video_bytes = video_file.read()
+#         st.video(video_bytes)
 
     # st.write(f.shape)
 
 DEMOS = OrderedDict(
     [
-        ("Picture", (page_picture, None)),
+        ("Images", (page_online, None)),
+        ("Upload picture", (page_picture, None)),
         ("Video", (page_video, None)),
-        ("Online", (page_online, None)),
     ]
 )
 def run():
+
     demo_name = st.sidebar.selectbox("Choose a demo", list(DEMOS.keys()), 0)
     demo = DEMOS[demo_name][0]
     for i in range(10):
