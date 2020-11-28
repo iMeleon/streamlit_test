@@ -271,7 +271,7 @@ def page_video():
     while (cap.isOpened()):
         success, frame = cap.read()
         if success:
-                # img_np = cv.cvtColor(img_np, cv.COLOR_BGR2RGB)  # cv2.IMREAD_COLOR
+            st.write(frame.shape)
             table_network.get_network_result(frame)
             image = table_network.vizaulizate(frame)
             out.write(image)
