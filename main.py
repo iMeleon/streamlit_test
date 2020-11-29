@@ -1,14 +1,22 @@
 import cv2 as cv
 import numpy as np
 import streamlit as st
+from PIL import Image
 import pandas as pd
 import requests
 from darknet import DarkNetwork
 
-table_network = DarkNetwork('models/darknet/yolo_tiny_monitor.cfg',
-                            'models/darknet/yolo_tiny_monitor_last.weights',
+
+
+#
+# dota_network = DarkNetwork('models/darknet/yolo_tiny_monitor.cfg',
+#                             'models/darknet/yolo_tiny_monitor_last.weights',
+#                             'models/darknet/classes.names',
+#                            probability_minimum=0.7)
+dota_network = DarkNetwork('models/darknet/yolov4-custom_monitor.cfg',
+                            'models/darknet/yolov4-custom_monitor_last.weights',
                             'models/darknet/classes.names',
-                            probability_minimum=0.7)
+                           probability_minimum=0.7)
 def telegram_bot_sendtext(bot_message):
 
    bot_token = '1419426197:AAHA44__TBtasdgmxNSFZoqHH4OzE18Md7U'
@@ -29,31 +37,28 @@ def decodeImage(data):
     return decoded;
 
 def page_picture():
+    with st.beta_container():
+        html_upload = """
+             <h2 align="center">Upload picture to predict</h2>
+        """
+        st.markdown(html_upload, unsafe_allow_html=True)
+        image = cv.imread('images/1.png'.format())
+        image = cv.cvtColor(image, cv.COLOR_BGR2RGB)
+        dota_network.get_network_result(image)
+        image = dota_network.vizaulizate(image)
+        uploaded_file = st.file_uploader("Choose a file")
+        if uploaded_file is not None:
+            bytes_data = uploaded_file.read()
+            nparr = np.fromstring(bytes_data, np.uint8)
+            img_np = cv.imdecode(nparr, cv.IMREAD_COLOR)
+            img_np = cv.cvtColor(img_np, cv.COLOR_BGR2RGB)
+            dota_network.get_network_result(img_np)
+            image = dota_network.vizaulizate(img_np)
 
-    html_upload = """
-         <h2 align="center">Upload picture to predict</h2>
-    """
-    st.markdown(html_upload, unsafe_allow_html=True)
-    image = cv.imread('images/1.png'.format())
-    image = cv.cvtColor(image, cv.COLOR_BGR2RGB)
-    table_network.get_network_result(image)
-    image = table_network.vizaulizate(image)
+            st.image(image, use_column_width=True)
 
-    uploaded_file = st.file_uploader("Choose a file")
-    if uploaded_file is not None:
-        bytes_data = uploaded_file.read()
-        nparr = np.fromstring(bytes_data, np.uint8)
-        img_np = cv.imdecode(nparr, cv.IMREAD_COLOR)
-        img_np = cv.cvtColor(img_np, cv.COLOR_BGR2RGB)# cv2.IMREAD_COLOR
-        table_network.get_network_result(img_np)
-        image = table_network.vizaulizate(img_np)
-
-        st.image(image, caption='Sunrise by the mountains',
-                 use_column_width=True)
-
-    else:
-        st.image(image, caption='Sunrise by the mountains',
-                 use_column_width=True)
+        else:
+            st.image(image, use_column_width=True)
 
 def page_video():
 
@@ -99,14 +104,14 @@ def page_online():
     """
     st.markdown(html, unsafe_allow_html=True)
     with st.beta_container():
-        id = st.slider('Pick diff img', 1, 6, 4)
-        st.write(id)
-        image = cv.imread('images/{}.png'.format(id))
+        id_ = st.slider('Pick diff img', 1, 6, 4)
+        image = cv.imread('images/{}.png'.format(id_))
         image = cv.cvtColor(image, cv.COLOR_BGR2RGB)
-        table_network.get_network_result(image)
-        image = table_network.vizaulizate(image)
-        st.image(image, caption='Sunrise by the mountains',
-                 use_column_width=True)
+        dota_network.get_network_result(image)
+        image = dota_network.vizaulizate(image)
+        st.image(image, use_column_width=True)
+        if dota_network.right_kill: telegram_bot_sendtext('Dire kills:{}'.format(dota_network.right_kill))
+        if dota_network.left_kill: telegram_bot_sendtext('Radiant kills:{}'.format(dota_network.left_kill))
         # telegram_bot_sendtext('322')
         # df = pd.DataFrame(np.array([[1, 2, 3,0]]),
         #                    columns=['Radiant_kill', 'Dire_Kill', 'Radiant_tower', 'Dire_Towers'])

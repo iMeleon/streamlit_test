@@ -1,0 +1,19 @@
+{
+  "kill_count": {
+    "label_encoder_save_path": "",
+    "model_save_path": "",
+    "image_width": 150,
+    "image_height": 38,
+    "device": "cpu",
+    "mean": [
+      0.485,
+      0.456,
+      0.406
+    ],
+    "std": [
+      0.229,
+      0.224,
+      0.225
+    ]
+  }
+}

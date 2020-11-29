@@ -8,10 +8,12 @@ from sklearn import preprocessing
 
 class RCNNModel:
     def __init__(self, label_encoder_save_path, model_save_path, device, image_width, image_height, mean, std):
+        label_encoder_save_path = r"C:\Users\user\Desktop\streamlit\models\crnn\number_classes.npy"
+        model_save_path = r"C:\Users\user\Desktop\streamlit\models\crnn\crnn_numbers_model.pth"
         self.lbl_enc = preprocessing.LabelEncoder()
         self.lbl_enc.classes_ = np.load(label_encoder_save_path)
         self.model = PytorchConvRecurNN(len(self.lbl_enc.classes_))
-        self.model.load_state_dict(torch.load(model_save_path, map_location=torch.device(device)))
+        self.model.load_state_dict(torch.load(model_save_path, map_location=torch.device('cpu')))
         self.model.eval()
         self.image_width = image_width
         self.image_height = image_height

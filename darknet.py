@@ -1,6 +1,13 @@
 import cv2 as cv
 import numpy as np
 import os
+from PIL import Image
+import json
+from crnn import RCNNModel
+with open('config.json', encoding="utf-8") as f:
+  config = json.load(f)
+bet_model = RCNNModel(**config['kill_count'])
+
 class DarkNetwork:
 
     def __init__(self, cfg_file_name, weights_file_name, class_file_name, probability_minimum=0.8, threshold=0.3):
@@ -19,8 +26,12 @@ class DarkNetwork:
         self.indices_after_NMSBoxes = None
         self.save_image_counter = 155
         self.objects_after_NMS = {}
+        self.left_kill = None
+        self.right_kill = None
 
     def get_network_result(self, photo):
+        self.left_kill = None
+        self.right_kill = None
         if 0 in photo.shape:
             print('Error in shape:', photo.shape)
             return None
@@ -31,7 +42,7 @@ class DarkNetwork:
         self.indices_after_NMSBoxes = []
         self.objects_after_NMS = {}
         h, w = photo.shape[:2]
-        blob = cv.dnn.blobFromImage(photo, 1 / 255.0, (448, 448),
+        blob = cv.dnn.blobFromImage(photo, 1 / 255.0, (608, 608),
                                     swapRB=False, crop=False)
         self.network.setInput(blob)  # setting blob as input to the network
         # start = time()
@@ -162,14 +173,32 @@ class DarkNetwork:
                 cv.rectangle(photo, (x_min, y_min),
                              (x_min + box_width, y_min + box_height),
                              colour_box_current, 3)
+                if self.labels[int(self.class_numbers[i])] == "LEFT_KILLS":
+                    left_kill = self.objects_after_NMS['LEFT_KILLS'][0]
+                    img = Image.fromarray(left_kill, 'RGB')
+                    # st.write(img)
+                    number = str(int(bet_model.predict(img)[0]))
+                    self.left_kill = number
+                    cv.putText(photo, text_box_current, (x_min-20, y_min + 65),
+                               cv.FONT_HERSHEY_COMPLEX, 1.1, colour_box_current, 3)
+                elif self.labels[int(self.class_numbers[i])] == "RIGHT_KILLS":
+                    left_kill = self.objects_after_NMS['RIGHT_KILLS'][0]
+                    img = Image.fromarray(left_kill, 'RGB')
+                    # st.write(img)
+                    number = str(int(bet_model.predict(img)[0]))
+                    self.right_kill = number
+                    text_box_current = '{}'.format( number)
+                    cv.putText(photo, text_box_current, (x_min, y_min + 65),
+                               cv.FONT_HERSHEY_COMPLEX, 1.1, colour_box_current, 3)
+                else:
 
-                # Preparing text with label and confidence for current bounding box
-                text_box_current = '{}: {:.4f}'.format(self.labels[int(self.class_numbers[i])],
+                    text_box_current = '{}: {:.2f}'.format(self.labels[int(self.class_numbers[i])],
                                                        self.confidences[i])
+                    cv.putText(photo, text_box_current, (x_min, y_min -30),
+                               cv.FONT_HERSHEY_COMPLEX, 0.7, colour_box_current, 2)
 
                 # Putting text with label and confidence on the original image
-                cv.putText(photo, text_box_current, (x_min, y_min - 5),
-                           cv.FONT_HERSHEY_COMPLEX, 0.7, colour_box_current, 2)
+
             # print('Number of objects left after non-maximum suppression:', counter)
 
         return photo
