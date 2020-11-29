@@ -1,25 +1,24 @@
 import cv2 as cv
 import numpy as np
 import streamlit as st
-# from PIL import Image
-# import pandas as pd
-from collections import OrderedDict
+
 import requests
 from darknet import DarkNetwork
 
 
 
 
-
-dota_network = DarkNetwork('models/darknet/yolo_tiny_monitor.cfg',
-                            'models/darknet/yolo_tiny_monitor_last.weights',
-                            'models/darknet/classes.names',
-                           probability_minimum=0.7)
-
-# dota_network = DarkNetwork('models/darknet/yolov4-custom_monitor.cfg',
-#                             'models/darknet/yolov4-custom_monitor_last.weights',
+#
+# dota_network = DarkNetwork('models/darknet/yolo_tiny_monitor.cfg',
+#                             'models/darknet/yolo_tiny_monitor_last.weights',
 #                             'models/darknet/classes.names',
 #                            probability_minimum=0.7)
+
+dota_network = DarkNetwork('models/darknet/yolov4-custom_monitor.cfg',
+                            'GnzfS.weights',
+                            'GnzfS.weights',
+                            'models/darknet/classes.names',
+                           probability_minimum=0.7)
 def telegram_bot_sendtext(bot_message):
 
    bot_token = '1419426197:AAHA44__TBtasdgmxNSFZoqHH4OzE18Md7U'
@@ -135,7 +134,6 @@ def run():
     page_online()
     # page_picture()
 if __name__ == "__main__":
-    print('hui')
     run()
 
 
