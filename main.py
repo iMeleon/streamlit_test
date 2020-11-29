@@ -124,14 +124,15 @@ def page_online():
         # df = pd.DataFrame(np.array([[1, 2, 3,0]]),
         #                    columns=['Radiant_kill', 'Dire_Kill', 'Radiant_tower', 'Dire_Towers'])
         # st.dataframe(df)
-        video_file = open('322.mp4', 'rb')
-        video_bytes = video_file.read()
-        st.video(video_bytes)
+        # video_file = open('322.mp4', 'rb')
+        # video_bytes = video_file.read()
+        # st.video(video_bytes)
 
 
 def run():
     page_online()
     page_picture()
+
 if __name__ == "__main__":
     run()
 
