@@ -131,7 +131,7 @@ def page_online():
 
 def run():
     page_online()
-    # page_picture()
+    page_picture()
 if __name__ == "__main__":
     run()
 
