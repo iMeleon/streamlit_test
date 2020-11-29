@@ -11,14 +11,14 @@ from darknet import DarkNetwork
 
 
 #
-# dota_network = DarkNetwork('models/darknet/yolo_tiny_monitor.cfg',
-#                             'models/darknet/yolo_tiny_monitor_last.weights',
-#                             'models/darknet/classes.names',
-#                            probability_minimum=0.7)
-dota_network = DarkNetwork('models/darknet/yolov4-custom_monitor.cfg',
-                            'models/darknet/hMQML.weights',
+dota_network = DarkNetwork('models/darknet/yolo_tiny_monitor.cfg',
+                            'models/darknet/yolo_tiny_monitor_last.weights',
                             'models/darknet/classes.names',
                            probability_minimum=0.7)
+# dota_network = DarkNetwork('models/darknet/yolov4-custom_monitor.cfg',
+#                             'models/darknet/yolov4-custom_monitor_last.weights',
+#                             'models/darknet/classes.names',
+#                            probability_minimum=0.7)
 def telegram_bot_sendtext(bot_message):
 
    bot_token = '1419426197:AAHA44__TBtasdgmxNSFZoqHH4OzE18Md7U'
