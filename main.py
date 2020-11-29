@@ -16,7 +16,6 @@ from darknet import DarkNetwork
 
 dota_network = DarkNetwork('models/darknet/yolov4-custom_monitor.cfg',
                             'GnzfS.weights',
-                            'GnzfS.weights',
                             'models/darknet/classes.names',
                            probability_minimum=0.7)
 def telegram_bot_sendtext(bot_message):
