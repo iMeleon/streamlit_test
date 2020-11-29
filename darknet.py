@@ -179,6 +179,7 @@ class DarkNetwork:
                     # st.write(img)
                     number = str(int(bet_model.predict(img)[0]))
                     self.left_kill = number
+                    text_box_current = '{}'.format(number)
                     cv.putText(photo, text_box_current, (x_min-20, y_min + 65),
                                cv.FONT_HERSHEY_COMPLEX, 1.1, colour_box_current, 3)
                 elif self.labels[int(self.class_numbers[i])] == "RIGHT_KILLS":

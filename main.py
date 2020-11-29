@@ -1,10 +1,12 @@
 import cv2 as cv
 import numpy as np
 import streamlit as st
-from PIL import Image
-import pandas as pd
+# from PIL import Image
+# import pandas as pd
+from collections import OrderedDict
 import requests
 from darknet import DarkNetwork
+
 
 
 
@@ -60,42 +62,49 @@ def page_picture():
         else:
             st.image(image, use_column_width=True)
 
-def page_video():
 
-    # to_show = cv.cvtColor(to_show, cv.COLOR_BGR2RGB)
-    # st.image(to_show, caption='Video',
-    #          use_column_width=True)
-
-    # f = st.file_uploader("Upload file")
-    # if f is not None:
-    #     pass
-    #     tfile = tempfile.NamedTemporaryFile(delete=False)
-    #     tfile.write(f.read())
-    #     cap = cv.VideoCapture(tfile.name)
-    # else:
-    #     cap = cv.VideoCapture('123.mp4')
-    # fourcc = cv.VideoWriter_fourcc(*'H264')
-    # if cap.isOpened() == False:
-    #     st.write("Error opening video stream or file")
-    # success, frame = cap.read()
-    # if success:
-    #     frame_rate = cap.get(cv.CAP_PROP_FPS)
-    #     out = cv.VideoWriter('output.mp4', fourcc, frame_rate, (frame.shape[1], frame.shape[0]))
-    # while (cap.isOpened()):
-    #     success, frame = cap.read()
-    #     if success:
-    #         table_network.get_network_result(frame)
-    #         table_network.get_network_result(frame)
-    #         image = table_network.vizaulizate(frame)
-    #         out.write(image)
-    #     else:
-    #         break
-    # cap.release()
-    # out.release()
-    video_file = open('output.mp4', 'rb')
-    video_bytes = video_file.read()
-    st.video(video_bytes)
-    # st.write(f.shape)
+# def page_video():
+#
+#     # to_show = cv.cvtColor(to_show, cv.COLOR_BGR2RGB)
+#     # st.image(to_show, caption='Video',
+#     #          use_column_width=True)
+#
+#
+#     cap = cv.VideoCapture('222.mp4')
+#     f = st.file_uploader("Upload file")
+#     if f is not None:
+#         pass
+#         # tfile = tempfile.NamedTemporaryFile(delete=False)
+#         # tfile.write(f.read())
+#         # cap = cv.VideoCapture(tfile.name)
+#     else:
+#         cap = cv.VideoCapture('222.mp4')
+#     fourcc = cv.VideoWriter_fourcc(*'mp4v')
+#     if cap.isOpened() == False:
+#         st.write("Error opening video stream or file")
+#     success, frame = cap.read()
+#     if success:
+#         frame_rate = cap.get(cv.CAP_PROP_FPS)
+#         out = cv.VideoWriter('output.mp4', fourcc, frame_rate, (frame.shape[1], frame.shape[0]))
+#     while (cap.isOpened()):
+#         success, frame = cap.read()
+#         if success:
+#
+#             dota_network.get_network_result(frame)
+#             image = dota_network.vizaulizate(frame)
+#             st.write(type(image))
+#             st.write(image.shape)
+#             st.image(image)
+#             out.write(image)
+#
+#         else:
+#             break
+#     cap.release()
+#     out.release()
+#     video_file = open('output.mp4', 'rb')
+#     video_bytes = video_file.read()
+#     st.video(video_bytes)
+#     st.write("Done")
 
 def page_online():
     html = """
@@ -104,7 +113,7 @@ def page_online():
     """
     st.markdown(html, unsafe_allow_html=True)
     with st.beta_container():
-        id_ = st.slider('Pick diff img', 1, 6, 4)
+        id_ = st.slider('Pick diff img', 1, 6, 3)
         image = cv.imread('images/{}.png'.format(id_))
         image = cv.cvtColor(image, cv.COLOR_BGR2RGB)
         dota_network.get_network_result(image)
@@ -116,10 +125,23 @@ def page_online():
         # df = pd.DataFrame(np.array([[1, 2, 3,0]]),
         #                    columns=['Radiant_kill', 'Dire_Kill', 'Radiant_tower', 'Dire_Towers'])
         # st.dataframe(df)
+        video_file = open('322.mp4', 'rb')
+        video_bytes = video_file.read()
+        st.video(video_bytes)
 
+DEMOS = OrderedDict(
+    [("Online", (page_online, None)),
+        ("Picture", (page_picture, None)),
+
+    ]
+)
 def run():
-    page_online()
-    page_picture()
+    demo_name = st.sidebar.selectbox("Choose a demo", list(DEMOS.keys()), 0)
+    demo = DEMOS[demo_name][0]
+    for i in range(10):
+        st.empty()
+
+    demo()
 
 
 if __name__ == "__main__":
