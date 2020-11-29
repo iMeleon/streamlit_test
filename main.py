@@ -11,14 +11,14 @@ from darknet import DarkNetwork
 
 
 #
-dota_network = DarkNetwork('models/darknet/yolo_tiny_monitor.cfg',
-                            'models/darknet/yolo_tiny_monitor_last.weights',
-                            'models/darknet/classes.names',
-                           probability_minimum=0.7)
-# dota_network = DarkNetwork('models/darknet/yolov4-custom_monitor.cfg',
-#                             'models/darknet/yolov4-custom_monitor_last.weights',
+# dota_network = DarkNetwork('models/darknet/yolo_tiny_monitor.cfg',
+#                             'models/darknet/yolo_tiny_monitor_last.weights',
 #                             'models/darknet/classes.names',
 #                            probability_minimum=0.7)
+dota_network = DarkNetwork('models/darknet/yolov4-custom_monitor.cfg',
+                            'models/darknet/yolov4-custom_monitor_last.weights',
+                            'models/darknet/classes.names',
+                           probability_minimum=0.7)
 def telegram_bot_sendtext(bot_message):
 
    bot_token = '1419426197:AAHA44__TBtasdgmxNSFZoqHH4OzE18Md7U'
@@ -129,21 +129,10 @@ def page_online():
         video_bytes = video_file.read()
         st.video(video_bytes)
 
-DEMOS = OrderedDict(
-    [("Online", (page_online, None)),
-        ("Picture", (page_picture, None)),
 
-    ]
-)
 def run():
-    demo_name = st.sidebar.selectbox("Choose a demo", list(DEMOS.keys()), 0)
-    demo = DEMOS[demo_name][0]
-    for i in range(10):
-        st.empty()
-
-    demo()
-
-
+    page_online()
+    page_picture()
 if __name__ == "__main__":
     run()
 

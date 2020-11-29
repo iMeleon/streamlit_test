@@ -8,7 +8,7 @@ from sklearn import preprocessing
 
 class RCNNModel:
     def __init__(self, label_encoder_save_path, model_save_path, device, image_width, image_height, mean, std):
-        label_encoder_save_path = "models/crnn/umber_classes.npy"
+        label_encoder_save_path = "models/crnn/number_classes.npy"
         model_save_path = "models/crnn/crnn_numbers_model.pth"
         self.lbl_enc = preprocessing.LabelEncoder()
         self.lbl_enc.classes_ = np.load(label_encoder_save_path)
